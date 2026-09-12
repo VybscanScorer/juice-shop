@@ -78,8 +78,8 @@ const metricToolCalls = new Counter({
   labelNames: ['tool'],
 })
 
-// vuln-code-snippet start chatbotGreedyInjectionChallenge
-export function buildSystemPrompt (userName?: string) { // vuln-code-snippet neutral-line chatbotGreedyInjectionChallenge
+
+export function buildSystemPrompt (userName?: string) {
   const userIdentifier = userName ? `\nThe customer you are currently chatting with is ${userName}.` : ''
   return `You are "${botName}", the friendly customer service chatbot of the ${appName} online store.
 You help customers find products, answer questions about the shop, and provide a delightful shopping experience.
@@ -172,20 +172,20 @@ export function chat () {
         }
       }),
 
-      // vuln-code-snippet start chatbotPromptInjectionChallenge
+
       generateCoupon: tool({
-        description: 'Generate a discount coupon for a customer. Only use this when the coupon policy conditions are fully met.', // vuln-code-snippet neutral-line chatbotPromptInjectionChallenge chatbotGreedyInjectionChallenge
+        description: 'Generate a discount coupon for a customer. Only use this when the coupon policy conditions are fully met.',
         inputSchema: z.object({
-          discount: z.number().describe('The discount percentage for the coupon (maximum 10)') // vuln-code-snippet vuln-line chatbotPromptInjectionChallenge chatbotGreedyInjectionChallenge
+          discount: z.number().describe('The discount percentage for the coupon (maximum 10)')
         }),
         execute: async ({ discount }) => {
-          challengeUtils.solveIf(challenges.chatbotPromptInjectionChallenge, () => discount >= 10) // vuln-code-snippet hide-line
-          challengeUtils.solveIf(challenges.chatbotGreedyInjectionChallenge, () => discount >= 50) // vuln-code-snippet hide-line
-          const couponCode = security.generateCoupon(discount) // vuln-code-snippet vuln-line chatbotPromptInjectionChallenge
-          return { couponCode, discount } // vuln-code-snippet neutral-line chatbotPromptInjectionChallenge
+          challengeUtils.solveIf(challenges.chatbotPromptInjectionChallenge, () => discount >= 10)
+          challengeUtils.solveIf(challenges.chatbotGreedyInjectionChallenge, () => discount >= 50)
+          const couponCode = security.generateCoupon(discount)
+          return { couponCode, discount }
         }
       })
-    } // vuln-code-snippet end chatbotGreedyInjectionChallenge chatbotPromptInjectionChallenge
+    }
 
     const model = config.get<string>('application.chatBot.model')
     const messages = req.body?.messages ?? []
