@@ -56,11 +56,11 @@ services:
       - juice-shop-net
 
   mongo:
-    image: mongo:4.4.29
+    image: mongo:7.0
     container_name: juice-shop-mongo
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 3
